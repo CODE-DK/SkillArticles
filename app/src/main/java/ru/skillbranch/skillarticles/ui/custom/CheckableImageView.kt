@@ -4,13 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Checkable
-import androidx.appcompat.widget.AppCompatImageView
 
 class CheckableImageView @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : AppCompatImageView(context, attrs, defStyleAttr), Checkable, View.OnClickListener {
+    attrs: AttributeSet,
+    dcfStyleAttr: Int = 0
+) : androidx.appcompat.widget.AppCompatImageView(context, attrs, dcfStyleAttr), Checkable,
+    View.OnClickListener {
+
     private var checked = false
 
     companion object {
@@ -22,12 +23,15 @@ class CheckableImageView @JvmOverloads constructor(
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
-        val drawableState = super.onCreateDrawableState(extraSpace + 1)
+        val drawableState: IntArray = super.onCreateDrawableState(extraSpace + 1)
         if (isChecked) View.mergeDrawableStates(drawableState, CHECKED_STATE_SET)
         return drawableState
     }
 
-    override fun isChecked(): Boolean = checked
+
+    override fun isChecked(): Boolean {
+        return checked
+    }
 
     override fun toggle() {
         isChecked = !checked
@@ -39,7 +43,10 @@ class CheckableImageView @JvmOverloads constructor(
         refreshDrawableState()
     }
 
+
     override fun onClick(v: View?) {
         toggle()
     }
+
+
 }

@@ -1,49 +1,46 @@
 package ru.skillbranch.skillarticles.data
 
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ru.skillbranch.skillarticles.R
 import java.util.*
 
 object LocalDataHolder {
     private var isDelay = true
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val articleData = MutableLiveData<ArticleData?>(null)
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val articleInfo = MutableLiveData<ArticlePersonalInfo?>(null)
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val settings = MutableLiveData(AppSettings())
 
+
     fun findArticle(articleId: String): LiveData<ArticleData?> {
-        Log.d("Unused param detected ", articleId)
         GlobalScope.launch {
-            if (isDelay) delay(2000)
-            articleData.postValue(
-                ArticleData(
-                    title = "CoordinatorLayout Basic",
-                    category = "Android",
-                    categoryIcon = R.drawable.logo,
-                    date = Date(),
-                    author = "Skill-Branch"
-                )
-            )
+            if (isDelay) delay(1000)
+            withContext(Dispatchers.Main){
+                articleData.value = ArticleData(
+                        title = "CoordinatorLayout Basic",
+                        category = "Android",
+                        categoryIcon = R.drawable.logo,
+                        date = Date(),
+                        author = "Skill-Branch"
+                    )
+            }
+
         }
         return articleData
+
     }
 
     fun findArticlePersonalInfo(articleId: String): LiveData<ArticlePersonalInfo?> {
-        Log.d("Unused param detected ", articleId)
         GlobalScope.launch {
-            if (isDelay) delay(1000)
-            articleInfo.postValue(ArticlePersonalInfo(isBookmark = true))
+            if (isDelay) delay(500)
+            withContext(Dispatchers.Main){
+                articleInfo.value = ArticlePersonalInfo(isBookmark = true)
+            }
         }
         return articleInfo
     }
@@ -58,8 +55,14 @@ object LocalDataHolder {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun disableDelay() {
-        isDelay = false
+    fun clearData(){
+        articleInfo.postValue(null)
+        articleData.postValue(null)
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun disableDelay(value:Boolean = false) {
+        isDelay = !value
     }
 }
 
@@ -69,17 +72,24 @@ object NetworkDataHolder {
     private var isDelay = true
 
     fun loadArticleContent(articleId: String): LiveData<List<Any>?> {
-        Log.d("Unused param detected ", articleId)
         GlobalScope.launch {
-            if (isDelay) delay(5000)
-            content.postValue(listOf(longText))
+            if (isDelay) delay(1500)
+            withContext(Dispatchers.Main){
+                content.value = listOf(longText)
+            }
+
         }
         return content
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun disableDelay() {
-        isDelay = false
+    fun disableDelay(value:Boolean = false) {
+        isDelay = !value
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun clearData(){
+        content.postValue(null)
     }
 }
 
